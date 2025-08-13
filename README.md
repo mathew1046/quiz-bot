@@ -22,8 +22,7 @@ A simple web app that generates multiple-choice questions from syllabus text usi
 
 ## 📂 Project Structure
 ```
-quiz-bot/
-│── static/               # CSS, JS, Images
+quiz-bot/             
 │── templates/            # HTML templates
 │── app.py                # Flask backend
 │── requirements.txt      # Python dependencies
@@ -103,6 +102,3 @@ Answer: Control Unit
 - **Couldn't parse AI response** → Check your Gemini output format; ensure it's valid JSON.
 
 ---
-
-## 📜 License
-© 2025 Mathew Joseph
