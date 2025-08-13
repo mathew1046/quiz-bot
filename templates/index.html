@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quiz Bot</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; }
+        textarea { width: 100%; height: 150px; }
+        button { padding: 10px; margin-top: 10px; cursor: pointer; }
+        .question { margin-top: 15px; padding: 10px; border: 1px solid #ccc; border-radius: 8px; }
+        .options { margin-left: 15px; }
+    </style>
+</head>
+<body>
+    <h1>📚 Quiz Bot</h1>
+    <p>Paste your syllabus here and get AI-generated MCQs.</p>
+
+    <textarea id="syllabus" placeholder="Paste syllabus here..."></textarea>
+    <br>
+    <button onclick="generateQuestions()">Generate Questions</button>
+
+    <div id="output"></div>
+
+    <script>
+async function generateQuestions() {
+    const syllabus = document.getElementById('syllabus').value;
+    if (!syllabus.trim()) {
+        alert("Please enter syllabus text!");
+        return;
+    }
+
+    document.getElementById('output').innerHTML = "⏳ Generating questions...";
+    
+    const response = await fetch("/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ syllabus })
+    });
+
+    const data = await response.json();
+    
+    if (data.error) {
+        document.getElementById('output').innerHTML = `<p style="color:red">${data.error}</p>`;
+        return;
+    }
+
+    try {
+        // No need for JSON.parse because backend already returns a JS array
+        const questions = data.questions; 
+        let html = "";
+        questions.forEach((q, i) => {
+            html += `<div class="question">
+                        <b>Q${i+1}: ${q.question}</b>
+                        <div class="options">
+                            ${q.options.map(opt => `<div>• ${opt}</div>`).join("")}
+                        </div>
+                        <i>Answer: ${q.answer}</i>
+                     </div>`;
+        });
+        document.getElementById('output').innerHTML = html;
+    } catch (e) {
+        document.getElementById('output').innerHTML = "<p>⚠ Couldn't parse the AI response.</p>";
+    }
+}
+</script>
+
+</body>
+</html>
